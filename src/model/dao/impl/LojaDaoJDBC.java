@@ -22,7 +22,7 @@ public class LojaDaoJDBC implements LojaDAO {
 
 	@Override
 	public void inserirLoja(Loja loja) {
-		String sql = "INSERT INTO Loja (nome, endereco, contato) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO Lojas (nome, endereco, contato) VALUES (?, ?, ?)";
 
 		try (PreparedStatement st = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -50,7 +50,7 @@ public class LojaDaoJDBC implements LojaDAO {
 
 	@Override
     public Loja buscarLoja(int id) {
-        String sql = "SELECT * FROM Loja WHERE id = ?";
+        String sql = "SELECT * FROM Lojas WHERE id = ?";
         try (PreparedStatement st = conn.prepareStatement(sql)) {
             st.setInt(1, id);
 
@@ -70,7 +70,7 @@ public class LojaDaoJDBC implements LojaDAO {
 	@Override
 	public List<Loja> listarLojas() {
 		List<Loja> lojas = new ArrayList<>();
-		String sql = "SELECT * FROM Loja ORDER BY nome";
+		String sql = "SELECT * FROM Lojas ORDER BY nome";
 		try (Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
 
 			while (rs.next()) {
@@ -89,7 +89,7 @@ public class LojaDaoJDBC implements LojaDAO {
 
 	@Override
 	public void atualizaLojas(Loja loja) {
-		String sql = "UPDATE Loja SET " + "nome = ?, endereco = ?, contato = ? " + "WHERE id = ?";
+		String sql = "UPDATE Lojas SET " + "nome = ?, endereco = ?, contato = ? " + "WHERE id = ?";
 
 		try (PreparedStatement st = conn.prepareStatement(sql)) {
 			st.setString(1, loja.getNome());
@@ -100,7 +100,7 @@ public class LojaDaoJDBC implements LojaDAO {
 			int rowsAffected = st.executeUpdate();
 
 			if (rowsAffected > 0) {
-				System.out.println("Atualização concluida com sucesso!");
+				 System.out.println("Loja atualizada com sucesso: " + loja.getNome());
 			} else {
 				throw new DbException("Erro inesperado! Nenhuma linha foi afetada!");
 			}
@@ -112,7 +112,11 @@ public class LojaDaoJDBC implements LojaDAO {
 
 	@Override
 	public void deletarLoja(int id) {
-		String sql = "DELETE FROM Loja WHERE id = ?";
+		if (id <= 0) {
+	        throw new IllegalArgumentException("ID inválido para a loja.");
+	    }
+		
+		String sql = "DELETE FROM Lojas WHERE id = ?";
 		try (PreparedStatement st = conn.prepareStatement(sql)) {
 			st.setInt(1, id);
 
