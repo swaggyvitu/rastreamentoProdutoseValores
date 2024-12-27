@@ -22,39 +22,40 @@ public class PrecoDaoJDBC implements PrecoDAO {
 
 	@Override
 	public void salvaPreco(Preco preco) {
-		String sql = "INSERT INTO Precos (produto_id, loja_id, preco, data_insercao) VALUES (?, ?, ?, ?)";
-		try (PreparedStatement st = conn.prepareStatement(sql)) {
-			st.setInt(1, preco.getProdutoId());
-			st.setInt(2, preco.getLojaId());
-			st.setDouble(3, preco.getPreco());
-			st.setTimestamp(4, Timestamp.valueOf(preco.getDataInsercao()));
+	    String sql = "INSERT INTO Precos (produto_id, loja_id, preco, data_insercao) VALUES (?, ?, ?, ?)";
+	    
+	   
+	    try (PreparedStatement st = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+	        st.setInt(1, preco.getProdutoId());
+	        st.setInt(2, preco.getLojaId());
+	        st.setDouble(3, preco.getPreco());
+	        st.setTimestamp(4, Timestamp.valueOf(preco.getDataInsercao()));
 
-			int rowsAffected = st.executeUpdate();
+	        int rowsAffected = st.executeUpdate();
 
-			if (rowsAffected > 0) {
-				try (ResultSet rs = st.getGeneratedKeys()) {
-					if (rs.next()) {
-						int id = rs.getInt(1);
-						preco.setId(id);
-					}
-				}
-				System.out.println("Preço salvo com sucesso!");
-			} else {
-				throw new DbException("Erro inesperado! Nenhuma linha foi afetada!");
-			}
+	        if (rowsAffected > 0) {
+	            try (ResultSet rs = st.getGeneratedKeys()) {
+	                if (rs.next()) {
+	                    int id = rs.getInt(1);
+	                    preco.setId(id);
+	                }
+	            }
+	            System.out.println("Preço salvo com sucesso!");
+	        } else {
+	            throw new DbException("Erro inesperado! Nenhuma linha foi afetada!");
+	        }
 
-		} catch (SQLException e) {
-			throw new DbException(e.getMessage());
-		}
-
+	    } catch (SQLException e) {
+	        throw new DbException(e.getMessage());
+	    }
 	}
 
 	@Override
-	public List<Preco> buscarPorProduto(int produtoId) {
+	public List<Preco> buscarPorProduto(int produto_id) {
 		List<Preco> precos = new ArrayList<>();
-		String sql = "SELECT * FROM Precos WHERE produto_id = ?";
+		String sql = "SELECT * FROM Precos WHERE produto_id  = ?";
 		try (PreparedStatement st = conn.prepareStatement(sql)) {
-			st.setInt(1, produtoId);
+			st.setInt(1, produto_id);
 
 			ResultSet rs = st.executeQuery();
 
@@ -69,12 +70,12 @@ public class PrecoDaoJDBC implements PrecoDAO {
 	}
 
 	@Override
-	public List<Preco> buscarPorLoja(int lojaId) {
+	public List<Preco> buscarPorLoja(int loja_id) {
 		List<Preco> precos = new ArrayList<>();
 		String sql = "SELECT * FROM Precos WHERE loja_id = ?";
 
 		try (PreparedStatement st = conn.prepareStatement(sql)) {
-			st.setInt(1, lojaId);
+			st.setInt(1, loja_id);
 
 			ResultSet rs = st.executeQuery();
 

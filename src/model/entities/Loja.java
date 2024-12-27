@@ -46,5 +46,15 @@ public class Loja {
 		this.contato = contato;
 	}
 	
-	
+	@Override
+	public String toString() {
+	    return String.format(
+	                         "  ID: %d\n" +
+	                         "  Nome: %s | Endereço: %s | Contato: %s" ,
+	                         id, 
+	                         nome != null ? nome : "N/A", 
+	                         endereco != null ? endereco : "N/A", 
+	                         contato != null ? contato : "N/A");
+	}
+
 }

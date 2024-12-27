@@ -36,4 +36,14 @@ public class Produto {
 		this.categoria = categoria;
 	}
 	
+	
+	@Override
+	public String toString() {
+	    return String.format("Produto {\n" +
+	                         "  ID: %d\n" +
+	                         "  Nome: %s\n" +
+	                         "  Categoria: %s\n" +
+	                         "}", id, nome, categoria);
+	}
+
 }
